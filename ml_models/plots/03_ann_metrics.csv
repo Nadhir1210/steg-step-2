@@ -1,0 +1,2 @@
+model,target,test_rmse,test_mae,test_r2,epochs_trained,architecture
+ANN (Deep Learning),TEMP_STATOR_MEAN_degC,0.8121445826095713,0.5878497123269655,0.998889987223872,37,128-64-32-16-1

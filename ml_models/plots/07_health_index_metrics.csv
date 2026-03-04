@@ -1,0 +1,2 @@
+mean_health_index,median_health_index,std_health_index,pct_excellent,pct_attention,pct_critical,weights
+79.63400145686548,78.7207366183164,6.126034731934935,35.719,0.052,0.002,"{'prediction_error': 0.3, 'asymmetry': 0.25, 'temp_power_ratio': 0.2, 'anomaly_score': 0.25}"

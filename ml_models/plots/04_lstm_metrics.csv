@@ -1,0 +1,2 @@
+model,target,test_rmse,test_mae,test_r2,window_size,horizon,epochs_trained
+LSTM (Time Series),TEMP_STATOR_MEAN_degC @ t+10min,2.947587613935802,1.9709372227885793,0.9792151431354947,10,10 minutes,16

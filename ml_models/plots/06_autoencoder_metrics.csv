@@ -1,0 +1,2 @@
+model,encoding_dim,threshold,threshold_percentile,n_anomalies,anomaly_rate,epochs_trained
+Autoencoder,4,0.001717252162210734,97,4500,0.03,30

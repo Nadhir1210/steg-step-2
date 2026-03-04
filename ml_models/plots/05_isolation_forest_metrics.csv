@@ -1,0 +1,2 @@
+model,contamination,n_samples,n_anomalies,anomaly_rate,n_features
+Isolation Forest,0.03,200000,6000,0.03,3

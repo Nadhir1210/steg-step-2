@@ -1,0 +1,2 @@
+accuracy,f1_score,roc_auc,train_samples,val_samples,test_samples,sequence_length,prediction_horizon,validation_type
+0.9614678899082569,0.9706213525077866,0,10388,2178,2180,60,30,chronological_split

@@ -1,0 +1,2 @@
+model,target,test_rmse,test_mae,test_r2,n_estimators,max_depth
+Random Forest,TEMP_STATOR_MEAN_degC,0.06964171364686499,0.02164119075415992,0.9999918534070925,100,15

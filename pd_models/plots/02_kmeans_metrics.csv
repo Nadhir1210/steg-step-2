@@ -1,0 +1,2 @@
+optimal_k,silhouette_score,inertia,n_samples,features,cluster_labels
+2,0.8568745616577412,54914.69006192443,14955,"['PD_INTENSITY_TOTAL', 'PD_ENERGY_TOTAL', 'INTENSITY_ASYMMETRY', 'ENERGY_ASYMMETRY', 'CURRENT_TOTAL', 'PULSE_TOTAL', 'PD_INTENSITY_ROLL_STD_30min', 'INTENSITY_CV']","{1: 'Faible activité (Normal)', 0: 'Activité modérée'}"
