@@ -836,6 +836,13 @@ def page_tickets():
     
     # Filters
     col1, col2, col3 = st.columns(3)
+    
+    # Get available options
+    available_statuses = df['status'].unique().tolist()
+    default_statuses = [s for s in ["OPEN", "IN_PROGRESS"] if s in available_statuses]
+    if not default_statuses:
+        default_statuses = available_statuses[:2] if len(available_statuses) >= 2 else available_statuses
+    
     with col1:
         filter_priority = st.multiselect("Priority", ["CRITICAL", "HIGH", "MEDIUM", "LOW"], 
                                         default=["CRITICAL", "HIGH"])
@@ -843,8 +850,8 @@ def page_tickets():
         filter_module = st.multiselect("Module", df['module'].unique().tolist(), 
                                       default=df['module'].unique().tolist())
     with col3:
-        filter_status = st.multiselect("Status", df['status'].unique().tolist(),
-                                      default=["OPEN", "IN_PROGRESS"])
+        filter_status = st.multiselect("Status", available_statuses,
+                                      default=default_statuses)
     
     # Apply filters
     filtered = df.copy()
