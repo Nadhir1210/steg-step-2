@@ -39,6 +39,7 @@ ENV/
 LAST_DATA/TG1_Sousse_1min_ML.csv
 LAST_DATA/APM_Chart_ML.csv
 LAST_DATA/APM_Alternateur_ML.csv
+LAST_DATA/manual.pdf
 
 # Large model files
 ml_models/plots/02_random_forest_model.pkl
