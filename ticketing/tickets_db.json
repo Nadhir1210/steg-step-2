@@ -1,0 +1,134 @@
+[
+  {
+    "ticket_id": "TKT-20260305-487B6C05",
+    "timestamp": "2026-03-05T07:21:43.237725",
+    "module": "THERMAL",
+    "anomaly_type": "Température élevée",
+    "severity_score": 85,
+    "priority": "HIGH",
+    "status": "OPEN",
+    "description": "Température élevée: 92.0°C (seuil: 80°C)",
+    "root_cause": "- Charge élevée détectée\n- Température ambiante élevée",
+    "recommended_action": "Vérifier système de refroidissement et isolation thermique",
+    "assigned_service": "Maintenance Mécanique",
+    "estimated_rul": "24-72 heures",
+    "related_features": [
+      "temperature",
+      "load",
+      "ambient_temp"
+    ],
+    "threshold_exceeded": {
+      "temperature": 92,
+      "load": 110,
+      "ambient_temp": 38
+    },
+    "auto_close_eligible": true,
+    "created_by": "ML_DETECTION_SYSTEM",
+    "updated_at": "2026-03-05T07:21:43.237725",
+    "resolution_notes": ""
+  },
+  {
+    "ticket_id": "TKT-20260305-5296CE81",
+    "timestamp": "2026-03-05T07:21:43.239815",
+    "module": "PD",
+    "anomaly_type": "Activité PD élevée",
+    "severity_score": 72,
+    "priority": "HIGH",
+    "status": "OPEN",
+    "description": "Activité PD élevée: 72.0/100",
+    "root_cause": "Analyse en cours",
+    "recommended_action": "Planifier inspection isolation stator",
+    "assigned_service": "Maintenance Électrique - Isolation",
+    "estimated_rul": "1-2 semaines",
+    "related_features": [
+      "pd_severity",
+      "pd_intensity",
+      "asymmetry"
+    ],
+    "threshold_exceeded": {
+      "pd_severity": 72,
+      "pd_intensity": 250000,
+      "asymmetry": 45
+    },
+    "auto_close_eligible": true,
+    "created_by": "ML_DETECTION_SYSTEM",
+    "updated_at": "2026-03-05T07:21:43.239815",
+    "resolution_notes": ""
+  },
+  {
+    "ticket_id": "TKT-20260305-95A90260",
+    "timestamp": "2026-03-05T07:21:43.240908",
+    "module": "ELECTRICAL",
+    "anomaly_type": "Asymétrie des phases",
+    "severity_score": 55,
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "description": "Asymétrie phases: 12.0% (max: 10%)",
+    "root_cause": "Analyse en cours",
+    "recommended_action": "Contrôler équilibrage des phases et connexions",
+    "assigned_service": "Maintenance Électrique",
+    "estimated_rul": "1-3 mois",
+    "related_features": [
+      "frequency_deviation",
+      "asymmetry"
+    ],
+    "threshold_exceeded": {
+      "frequency_deviation": 0.8,
+      "asymmetry": 12
+    },
+    "auto_close_eligible": true,
+    "created_by": "ML_DETECTION_SYSTEM",
+    "updated_at": "2026-03-05T07:21:43.240908",
+    "resolution_notes": ""
+  },
+  {
+    "ticket_id": "TKT-20260305-F39466A6",
+    "timestamp": "2026-03-05T07:21:43.241905",
+    "module": "COOLING",
+    "anomaly_type": "Inefficacité refroidissement",
+    "severity_score": 45,
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "description": "ΔT: 2.5°C, Efficacité: 65.0%",
+    "root_cause": "Analyse en cours",
+    "recommended_action": "Inspecter échangeurs thermiques et ventilateurs",
+    "assigned_service": "Maintenance Mécanique",
+    "estimated_rul": "1-3 mois",
+    "related_features": [
+      "delta_t",
+      "efficiency"
+    ],
+    "threshold_exceeded": {
+      "delta_t": 2.5,
+      "efficiency": 0.65
+    },
+    "auto_close_eligible": true,
+    "created_by": "ML_DETECTION_SYSTEM",
+    "updated_at": "2026-03-05T07:21:43.241905",
+    "resolution_notes": ""
+  },
+  {
+    "ticket_id": "TKT-20260305-B86456DF",
+    "timestamp": "2026-03-05T07:26:50.258789",
+    "module": "COOLING",
+    "anomaly_type": "Inefficacité refroidissement",
+    "severity_score": 50,
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "description": "ΔT: 0.0°C, Efficacité: 100.0%",
+    "root_cause": "Analyse en cours",
+    "recommended_action": "Inspecter échangeurs thermiques et ventilateurs",
+    "assigned_service": "Maintenance Mécanique",
+    "estimated_rul": "1-3 mois",
+    "related_features": [
+      "temperature"
+    ],
+    "threshold_exceeded": {
+      "temperature": 85
+    },
+    "auto_close_eligible": true,
+    "created_by": "ML_DETECTION_SYSTEM",
+    "updated_at": "2026-03-05T07:26:50.258789",
+    "resolution_notes": ""
+  }
+]
