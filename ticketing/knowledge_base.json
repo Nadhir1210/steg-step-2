@@ -1,0 +1,157 @@
+[
+  {
+    "chunk_id": "KB-0000",
+    "source": "Manuel Turbine TG1 - Section 4.2",
+    "category": "THERMAL",
+    "content": "PROCÉDURE DE SURCHAUFFE STATOR\n                ================================\n                1. Vérifier la température ambiante et les conditions de charge\n                2. Contrôler le système de refroidissement (ventilateurs, échangeurs)\n                3. Inspecter l'isolation thermique des enroulements\n                4. Mesurer la résistance d'isolement\n                5. Vérifier l'équilibre des phases\n                \n                SEUILS CRITIQUES:\n                - Température stator max: 130°C (alarme), 140°C (déclenchement)\n                - Gradient max: 5°C/minute\n                - Température paliers: 80°C max",
+    "keywords": [
+      "température",
+      "stator",
+      "surchauffe",
+      "refroidissement",
+      "isolation"
+    ],
+    "embedding": null
+  },
+  {
+    "chunk_id": "KB-0001",
+    "source": "Manuel Turbine TG1 - Section 4.3",
+    "category": "THERMAL",
+    "content": "DIAGNOSTIC THERMIQUE AVANCÉ\n                ===========================\n                Causes fréquentes de surchauffe:\n                - Surcharge prolongée (>110% charge nominale)\n                - Défaut ventilation (obstruction, panne ventilateur)\n                - Court-circuit inter-spires (point chaud localisé)\n                - Déséquilibre de charge entre phases\n                - Dégradation isolation (vieillissement, humidité)\n                \n                Actions correctives:\n                - Réduire la charge si >100%\n                - Nettoyer les filtres à air\n                - Vérifier le débit d'eau de refroidissement\n                - Contrôler l'étanchéité du circuit de refroidissement",
+    "keywords": [
+      "diagnostic",
+      "thermique",
+      "surchauffe",
+      "ventilation",
+      "surcharge"
+    ],
+    "embedding": null
+  },
+  {
+    "chunk_id": "KB-0002",
+    "source": "Manuel Turbine TG1 - Section 5.1",
+    "category": "COOLING",
+    "content": "SYSTÈME DE REFROIDISSEMENT\n                ==========================\n                Le système de refroidissement comprend:\n                - Refroidissement à air (ventilateurs axiaux)\n                - Refroidissement à eau (échangeurs thermiques)\n                - Circuit d'hydrogène (alternateurs haute puissance)\n                \n                PARAMÈTRES NOMINAUX:\n                - Delta T air (entrée/sortie): 15-25°C\n                - Débit d'eau: 500 m³/h\n                - Pression circuit: 3-4 bar\n                - Efficacité minimale: 85%\n                \n                MAINTENANCE PRÉVENTIVE:\n                - Nettoyage filtres: mensuel\n                - Contrôle étanchéité: trimestriel\n                - Analyse eau: semestriel",
+    "keywords": [
+      "refroidissement",
+      "ventilation",
+      "échangeur",
+      "débit",
+      "efficacité"
+    ],
+    "embedding": null
+  },
+  {
+    "chunk_id": "KB-0003",
+    "source": "Manuel Turbine TG1 - Section 5.2",
+    "category": "COOLING",
+    "content": "DIAGNOSTIC DÉFAUT REFROIDISSEMENT\n                =================================\n                Symptômes d'inefficacité:\n                - Delta T < 10°C (insuffisant)\n                - Delta T > 30°C (surcharge thermique)\n                - Température sortie air > 60°C\n                \n                Causes probables:\n                1. Filtres encrassés → Nettoyage/remplacement\n                2. Ventilateur défaillant → Contrôle moteur et pales\n                3. Fuite circuit eau → Recherche et colmatage\n                4. Encrassement échangeur → Nettoyage chimique\n                5. Pompe défaillante → Vérification débit et pression",
+    "keywords": [
+      "diagnostic",
+      "refroidissement",
+      "delta",
+      "filtre",
+      "ventilateur"
+    ],
+    "embedding": null
+  },
+  {
+    "chunk_id": "KB-0004",
+    "source": "Manuel Turbine TG1 - Section 6.1",
+    "category": "ELECTRICAL",
+    "content": "STABILITÉ ÉLECTRIQUE\n                ====================\n                Paramètres nominaux TG1 Sousse:\n                - Puissance: 124 MW\n                - Tension: 15.75 kV\n                - Fréquence: 50 Hz ± 0.1%\n                - Facteur de puissance: 0.85\n                \n                LIMITES D'EXPLOITATION:\n                - Fréquence: 49.5 - 50.5 Hz\n                - Tension: ± 5% nominal\n                - Asymétrie phases: < 3%\n                - Courant rotor max: 2500 A\n                \n                PROTECTIONS:\n                - Surtension: déclenchement à 110%\n                - Sous-fréquence: déclenchement à 47.5 Hz\n                - Surintensité: alarme à 105%, décl. à 120%",
+    "keywords": [
+      "électrique",
+      "fréquence",
+      "tension",
+      "puissance",
+      "protection"
+    ],
+    "embedding": null
+  },
+  {
+    "chunk_id": "KB-0005",
+    "source": "Manuel Turbine TG1 - Section 6.2",
+    "category": "ELECTRICAL",
+    "content": "DIAGNOSTIC INSTABILITÉ ÉLECTRIQUE\n                =================================\n                Causes d'asymétrie des phases:\n                - Déséquilibre de charge réseau\n                - Défaut connexion (serrage, oxydation)\n                - Court-circuit partiel enroulement\n                - Défaut transformateur élévateur\n                \n                Actions correctives:\n                1. Vérifier équilibre charges par phase\n                2. Contrôler serrages connexions HT\n                3. Mesurer résistances d'enroulements\n                4. Thermographie infrarouge des connexions\n                5. Analyse vibratoire (origine mécanique)\n                \n                ATTENTION: Toute intervention HT nécessite consignation!",
+    "keywords": [
+      "asymétrie",
+      "phases",
+      "déséquilibre",
+      "connexion",
+      "court-circuit"
+    ],
+    "embedding": null
+  },
+  {
+    "chunk_id": "KB-0006",
+    "source": "Manuel Turbine TG1 - Section 7.1",
+    "category": "PD",
+    "content": "DÉCHARGES PARTIELLES (PD)\n                =========================\n                Les décharges partielles indiquent une dégradation de l'isolation.\n                \n                TYPES DE PD:\n                - PD internes (cavités dans isolation)\n                - PD de surface (tracking)\n                - PD corona (champ électrique intense)\n                \n                SEUILS D'ALERTE:\n                - Niveau bas: < 100 pC (normal)\n                - Niveau moyen: 100-500 pC (surveillance)\n                - Niveau élevé: 500-1000 pC (maintenance planifiée)\n                - Niveau critique: > 1000 pC (intervention urgente)\n                \n                FACTEURS AGGRAVANTS:\n                - Humidité > 60%\n                - Température élevée\n                - Surtensions répétées\n                - Vibrations mécaniques",
+    "keywords": [
+      "décharge",
+      "partielle",
+      "isolation",
+      "PD",
+      "corona",
+      "cavité"
+    ],
+    "embedding": null
+  },
+  {
+    "chunk_id": "KB-0007",
+    "source": "Manuel Turbine TG1 - Section 7.2",
+    "category": "PD",
+    "content": "DIAGNOSTIC ET MAINTENANCE PD\n                ============================\n                Procédure de diagnostic:\n                1. Mesure PD en ligne (capteurs HFCT)\n                2. Localisation par triangulation\n                3. Analyse pattern reconnaissance (PRPD)\n                4. Corrélation avec charge et température\n                \n                Actions selon niveau:\n                - Niveau moyen: Surveillance renforcée, analyse tendance\n                - Niveau élevé: Planifier arrêt pour inspection\n                - Niveau critique: Réduire charge, préparer intervention\n                \n                Réparations possibles:\n                - Réinjection résine époxy (cavités)\n                - Revêtement semi-conducteur (tracking)\n                - Remplacement barres (cas sévère)",
+    "keywords": [
+      "diagnostic",
+      "PD",
+      "mesure",
+      "localisation",
+      "réparation"
+    ],
+    "embedding": null
+  },
+  {
+    "chunk_id": "KB-0008",
+    "source": "Historique Incidents TG1 - 2024",
+    "category": "INCIDENTS",
+    "content": "INCIDENT #2024-047: Surchauffe Phase B\n                Date: 15/07/2024\n                Symptômes: Température phase B +15°C vs A et C\n                Cause: Connexion desserrée sortie alternateur\n                Résolution: Resserrage couple 120 Nm, nettoyage contacts\n                Durée arrêt: 4 heures\n                \n                INCIDENT #2024-089: PD élevé sur barres stator\n                Date: 23/09/2024\n                Symptômes: PD > 800 pC, asymétrie canaux\n                Cause: Dégradation isolation barre #23 (fissure)\n                Résolution: Réinjection résine + surveillance\n                Prochaine action: Remplacement planifié révision 2025",
+    "keywords": [
+      "incident",
+      "historique",
+      "surchauffe",
+      "PD",
+      "résolution"
+    ],
+    "embedding": null
+  },
+  {
+    "chunk_id": "KB-0009",
+    "source": "Historique Incidents TG1 - 2025",
+    "category": "INCIDENTS",
+    "content": "INCIDENT #2025-012: Baisse efficacité refroidissement\n                Date: 08/02/2025\n                Symptômes: Delta T réduit à 8°C, températures en hausse\n                Cause: Filtres air colmatés + encrassement échangeur\n                Résolution: Nettoyage complet circuit refroidissement\n                Durée arrêt: 8 heures\n                \n                INCIDENT #2025-028: Instabilité fréquence\n                Date: 14/03/2025\n                Symptômes: Oscillations ±0.3 Hz\n                Cause: Défaut régulateur vitesse\n                Résolution: Recalibration régulateur + firmware update\n                Durée arrêt: 2 heures",
+    "keywords": [
+      "incident",
+      "2025",
+      "refroidissement",
+      "fréquence",
+      "régulateur"
+    ],
+    "embedding": null
+  },
+  {
+    "chunk_id": "KB-0010",
+    "source": "Planning Maintenance TG1",
+    "category": "MAINTENANCE",
+    "content": "PLANNING MAINTENANCE PRÉVENTIVE\n                ===============================\n                \n                QUOTIDIEN:\n                - Relevé températures (auto)\n                - Contrôle visuel fuites\n                - Vérification alarmes\n                \n                HEBDOMADAIRE:\n                - Analyse vibratoire\n                - Test protection\n                - Relevé compteurs énergie\n                \n                MENSUEL:\n                - Prélèvement huile (analyse)\n                - Contrôle filtres air\n                - Vérification serrages accessibles\n                \n                TRIMESTRIEL:\n                - Thermographie infrarouge\n                - Mesure isolement enroulements\n                - Contrôle système refroidissement\n                \n                ANNUEL (arrêt programmé):\n                - Inspection complète stator/rotor\n                - Remplacement filtres\n                - Étalonnage capteurs\n                - Test PD complet",
+    "keywords": [
+      "maintenance",
+      "préventive",
+      "planning",
+      "inspection",
+      "test"
+    ],
+    "embedding": null
+  }
+]

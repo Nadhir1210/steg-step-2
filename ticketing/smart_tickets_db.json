@@ -1,0 +1,101 @@
+[
+  {
+    "ticket_id": "SMART-20260305-5139A178",
+    "timestamp": "2026-03-05T15:13:18.998838",
+    "module": "THERMAL",
+    "anomaly_type": "Température élevée",
+    "severity_score": 85,
+    "priority": "HIGH",
+    "status": "OPEN",
+    "ml_confidence": 0.92,
+    "detected_features": {
+      "temperature": 95,
+      "load": 110,
+      "delta_t": 12,
+      "efficiency": 0.75,
+      "ambient_temp": 35
+    },
+    "shap_analysis": {
+      "load": 0.45,
+      "cooling": 0.3,
+      "ambient": 0.15,
+      "other": 0.1
+    },
+    "retrieved_docs": [
+      "[Manuel Turbine TG1 - Section 4.2] PROCÉDURE DE SURCHAUFFE STATOR\n                ================================\n                1. Vérifier la température ambiante et les conditions de charge\n                2. Contrôler le système de refroidissement (ventilateurs, échangeurs)\n                3. Inspecter l'isolation thermique des...",
+      "[Manuel Turbine TG1 - Section 7.1] DÉCHARGES PARTIELLES (PD)\n                =========================\n                Les décharges partielles indiquent une dégradation de l'isolation.\n                \n                TYPES DE PD:\n                - PD internes (cavités dans isolation)\n                - PD de surface (tracking)\n     ...",
+      "[Manuel Turbine TG1 - Section 5.2] DIAGNOSTIC DÉFAUT REFROIDISSEMENT\n                =================================\n                Symptômes d'inefficacité:\n                - Delta T < 10°C (insuffisant)\n                - Delta T > 30°C (surcharge thermique)\n                - Température sortie air > 60°C\n                \n       ..."
+    ],
+    "relevant_procedures": [
+      "PROCÉDURE DE SURCHAUFFE STATOR\n                ================================\n                1. Vérifier la température ambiante et les conditions de charge\n                2. Contrôler le système de refroidissement (ventilateurs, échangeurs)\n                3. Inspecter l'isolation thermique des enroulements\n                4. Mesurer la résistance d'isolement\n                5. Vérifier l'équilibre des phases\n                \n                SEUILS CRITIQUES:\n                - Température s"
+    ],
+    "similar_incidents": [
+      "INCIDENT #2024-047: Surchauffe Phase B\n                Date: 15/07/2024\n                Symptômes: Température phase B +15°C vs A et C\n                Cause: Connexion desserrée sortie alternateur\n                Résolution: Resserrage couple 120 Nm, nettoyage contacts\n                Durée arrêt: 4 heures\n                \n                INCIDENT #2024-089: PD élevé sur barres stator\n                Date: 23/09/2024\n                Symptômes: PD > 800 pC, asymétrie canaux\n                Cause:",
+      "INCIDENT #2025-012: Baisse efficacité refroidissement\n                Date: 08/02/2025\n                Symptômes: Delta T réduit à 8°C, températures en hausse\n                Cause: Filtres air colmatés + encrassement échangeur\n                Résolution: Nettoyage complet circuit refroidissement\n                Durée arrêt: 8 heures\n                \n                INCIDENT #2025-028: Instabilité fréquence\n                Date: 14/03/2025\n                Symptômes: Oscillations ±0.3 Hz\n        "
+    ],
+    "llm_description": "Anomalie thermique détectée sur le module THERMAL. La température mesurée de 95.0°C dépasse le seuil de 80°C, indiquant une condition de 50. L'analyse ML a identifié cette déviation avec une confiance de 92.0%.",
+    "llm_root_cause": "**Analyse des causes probables (ML + SHAP)**\n\n🔍 **Facteurs principaux identifiés:**\n\n1. **Charge thermique** - Contribution: 45%\n   - Puissance actuelle: 110 MW\n   - Ratio vs nominal: 89%\n\n2. **Efficacité refroidissement** - Contribution: 30%\n   - ΔT mesuré: 12.0°C\n   - Efficacité: 75%\n\n3. **Conditions ambiantes** - Contribution: 15%\n   - Température ambiante: 35°C\n\n📊 **Corrélations détectées:**\n- Température ↔ Charge: r = 0.85\n- Température ↔ ΔT Refroidissement: r = -0.72\n",
+    "llm_recommendation": "🔶 **INTERVENTION RAPIDE RECOMMANDÉE**\n\n📋 **Planification (24-72 heures):**\n1. Programmer intervention lors de la prochaine fenêtre disponible\n2. Préparer outillage et pièces de rechange\n3. Documenter l'évolution des paramètres\n\n🔧 **Actions recommandées:**\n- Inspection visuelle\n- Contrôle paramètres\n\n📊 **Surveillance renforcée:**\n- Fréquence relevés: Toutes les 2 heures\n- Seuils d'alerte: Temp > 95°C (alarme), > 100°C (arrêt)\n\n👥 **Ressources:** Équipe Maintenance Mécanique + Électrique\n",
+    "llm_prevention": "Pour prévenir les futures occurrences:\n1. Optimiser le planning de charge en période de forte chaleur\n2. Augmenter la fréquence de nettoyage des filtres (mensuel → bi-hebdomadaire en été)\n3. Vérifier le bon fonctionnement des alarmes de température\n4. Planifier une maintenance préventive du système de refroidissement",
+    "assigned_service": "Maintenance Mécanique",
+    "estimated_rul": "Urgent: 24-72 heures",
+    "auto_close_eligible": false,
+    "created_by": "SMART_AI_SYSTEM",
+    "updated_at": "2026-03-05T15:13:18.998838",
+    "resolution_notes": "",
+    "processing_time_ms": 0.0,
+    "model_versions": {
+      "ml_detector": "v2.0",
+      "rag_retriever": "v1.0",
+      "llm_generator": "template_v1.0"
+    }
+  },
+  {
+    "ticket_id": "SMART-20260305-68149816",
+    "timestamp": "2026-03-05T15:13:19.003525",
+    "module": "PD",
+    "anomaly_type": "Décharges partielles critiques",
+    "severity_score": 78,
+    "priority": "HIGH",
+    "status": "OPEN",
+    "ml_confidence": 0.95,
+    "detected_features": {
+      "pd_severity": 78,
+      "pd_intensity": 350000,
+      "asymmetry": 45
+    },
+    "shap_analysis": {
+      "CURRENT_TOTAL": 0.35,
+      "INTENSITY_ASYMMETRY": 0.3,
+      "PULSE_TOTAL": 0.2
+    },
+    "retrieved_docs": [
+      "[Manuel Turbine TG1 - Section 7.1] DÉCHARGES PARTIELLES (PD)\n                =========================\n                Les décharges partielles indiquent une dégradation de l'isolation.\n                \n                TYPES DE PD:\n                - PD internes (cavités dans isolation)\n                - PD de surface (tracking)\n     ...",
+      "[Manuel Turbine TG1 - Section 4.2] PROCÉDURE DE SURCHAUFFE STATOR\n                ================================\n                1. Vérifier la température ambiante et les conditions de charge\n                2. Contrôler le système de refroidissement (ventilateurs, échangeurs)\n                3. Inspecter l'isolation thermique des...",
+      "[Manuel Turbine TG1 - Section 7.2] DIAGNOSTIC ET MAINTENANCE PD\n                ============================\n                Procédure de diagnostic:\n                1. Mesure PD en ligne (capteurs HFCT)\n                2. Localisation par triangulation\n                3. Analyse pattern reconnaissance (PRPD)\n                4. Corré..."
+    ],
+    "relevant_procedures": [
+      "DÉCHARGES PARTIELLES (PD)\n                =========================\n                Les décharges partielles indiquent une dégradation de l'isolation.\n                \n                TYPES DE PD:\n                - PD internes (cavités dans isolation)\n                - PD de surface (tracking)\n                - PD corona (champ électrique intense)\n                \n                SEUILS D'ALERTE:\n                - Niveau bas: < 100 pC (normal)\n                - Niveau moyen: 100-500 pC (surveill"
+    ],
+    "similar_incidents": [
+      "INCIDENT #2024-047: Surchauffe Phase B\n                Date: 15/07/2024\n                Symptômes: Température phase B +15°C vs A et C\n                Cause: Connexion desserrée sortie alternateur\n                Résolution: Resserrage couple 120 Nm, nettoyage contacts\n                Durée arrêt: 4 heures\n                \n                INCIDENT #2024-089: PD élevé sur barres stator\n                Date: 23/09/2024\n                Symptômes: PD > 800 pC, asymétrie canaux\n                Cause:",
+      "INCIDENT #2025-012: Baisse efficacité refroidissement\n                Date: 08/02/2025\n                Symptômes: Delta T réduit à 8°C, températures en hausse\n                Cause: Filtres air colmatés + encrassement échangeur\n                Résolution: Nettoyage complet circuit refroidissement\n                Durée arrêt: 8 heures\n                \n                INCIDENT #2025-028: Instabilité fréquence\n                Date: 14/03/2025\n                Symptômes: Oscillations ±0.3 Hz\n        "
+    ],
+    "llm_description": "Activité de décharges partielles élevée détectée. Score de sévérité PD: 50.0/100. L'analyse multi-canaux révèle une asymétrie de 45.0%, suggérant une dégradation localisée de l'isolation.",
+    "llm_root_cause": "**Analyse causale décharges partielles (ML + Pattern Recognition)**\n\n🔍 **Localisation:**\n- Canaux affectés: CH1, CH3 (asymétrie maximale)\n- Zone probable: Barres stator côté excitation\n\n📊 **Type de décharge identifié:**\n- Pattern: Décharges internes (cavités)\n- Confiance classification: 87%\n\n⚠️ **Facteurs aggravants:**\n- Intensité totale: 350000 (élevé)\n- Asymétrie inter-canaux: 45.0%\n- Tendance: Stable →\n\n🎯 **Contributions SHAP:**\n- CURRENT_TOTAL: 41%\n- INTENSITY_ASYMMETRY: 35%\n- PULSE_TOTAL: 24%\n",
+    "llm_recommendation": "🔶 **INTERVENTION RAPIDE RECOMMANDÉE**\n\n📋 **Planification (24-72 heures):**\n1. Programmer intervention lors de la prochaine fenêtre disponible\n2. Préparer outillage et pièces de rechange\n3. Documenter l'évolution des paramètres\n\n🔧 **Actions recommandées:**\n- Inspection visuelle\n- Contrôle paramètres\n\n📊 **Surveillance renforcée:**\n- Fréquence relevés: Toutes les 2 heures\n- Seuils d'alerte: Sévérité > 80, Intensité > 500K\n\n👥 **Ressources:** Spécialistes Isolation + Maintenance Électrique\n",
+    "llm_prevention": "Prévention dégradation isolation:\n1. Contrôler l'humidité dans l'alternateur (maintenir < 40%)\n2. Éviter les surtensions par amélioration des protections\n3. Programme de mesure PD en ligne continue\n4. Planifier remplacement préventif des barres à risque (> 20 ans)",
+    "assigned_service": "Spécialistes Isolation & Électrique",
+    "estimated_rul": "Urgent: 24-72 heures",
+    "auto_close_eligible": false,
+    "created_by": "SMART_AI_SYSTEM",
+    "updated_at": "2026-03-05T15:13:19.003525",
+    "resolution_notes": "",
+    "processing_time_ms": 0.0,
+    "model_versions": {
+      "ml_detector": "v2.0",
+      "rag_retriever": "v1.0",
+      "llm_generator": "template_v1.0"
+    }
+  }
+]
