@@ -1,8 +1,10 @@
 export interface Model {
   name: string
-  type: 'ml' | 'pd' | 'tg1'
-  status: 'loaded' | 'error' | 'loading'
+  type: string
+  category: 'ml' | 'pd' | 'tg1' | 'scaler'
+  loaded: boolean
   path?: string
+  status?: 'loaded' | 'error' | 'loading'
 }
 
 export interface Dataset {

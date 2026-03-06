@@ -12,6 +12,9 @@ const api = axios.create({
 // Health & System
 export const getHealth = () => api.get('/health')
 export const getModels = () => api.get('/models')
+export const getModelResults = (modelName: string, dataset?: string) => 
+  api.get(`/models/${modelName}/results`, { params: { dataset } })
+export const getAllModelsResults = () => api.get('/models/all-results')
 
 // Data
 export const getDatasets = () => api.get('/data/datasets')
@@ -44,5 +47,9 @@ export const updateTicketStatus = (id: string, status: string) =>
 
 // Health Index
 export const getHealthIndex = () => api.get('/health-index')
+
+// Realtime Monitoring
+export const getRealtimeMonitoring = (dataset?: string, samples?: number) =>
+  api.get('/monitoring/realtime', { params: { dataset, samples } })
 
 export default api

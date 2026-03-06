@@ -154,8 +154,10 @@ export default function Monitoring() {
             onChange={(e) => setActiveDataset(e.target.value)}
             className="px-4 py-2 border border-slate-200 rounded-lg"
           >
-            {datasets?.datasets?.map((ds: string) => (
-              <option key={ds} value={ds}>{ds.replace(/_/g, ' ')}</option>
+            {datasets?.datasets?.map((ds: any) => (
+              <option key={ds.name || ds} value={ds.name || ds}>
+                {(ds.name || ds).replace(/_/g, ' ')}
+              </option>
             ))}
           </select>
           <button
