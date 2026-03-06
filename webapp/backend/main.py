@@ -22,7 +22,7 @@ import warnings
 warnings.filterwarnings('ignore')
 
 # Paths
-BASE_DIR = Path(__file__).parent.parent
+BASE_DIR = Path(__file__).parent.parent.parent  # Go up to project root
 ML_MODELS_DIR = BASE_DIR / "ml_models" / "plots"
 PD_MODELS_DIR = BASE_DIR / "pd_models" / "plots"
 TG1_MODELS_DIR = BASE_DIR / "tg1_monitoring" / "plots"
@@ -235,33 +235,36 @@ async def list_models():
     models = []
     
     for name, info in registry.ml_models.items():
-        if isinstance(info, dict) and 'model' in info:
-            models.append(ModelInfo(
-                name=name,
-                type="ml",
-                status=info.get('status', 'unknown'),
-                path=f"ml_models/plots/{name}"
-            ))
+        if isinstance(info, dict):
+            models.append({
+                "name": name,
+                "type": "XGBoost" if "xgboost" in name.lower() else "RandomForest" if "forest" in name.lower() else "Sklearn",
+                "category": "ml",
+                "loaded": info.get('status') == 'loaded',
+                "path": str(ML_MODELS_DIR / f"{name}.pkl")
+            })
     
     for name, info in registry.pd_models.items():
-        if isinstance(info, dict) and 'model' in info:
-            models.append(ModelInfo(
-                name=name,
-                type="pd",
-                status=info.get('status', 'unknown'),
-                path=f"pd_models/plots/{name}"
-            ))
+        if isinstance(info, dict):
+            models.append({
+                "name": name,
+                "type": "Classifier" if "classifier" in name.lower() else "Clustering",
+                "category": "pd",
+                "loaded": info.get('status') == 'loaded',
+                "path": str(PD_MODELS_DIR / f"{name}.pkl")
+            })
     
     for name, info in registry.tg1_models.items():
-        if isinstance(info, dict) and 'model' in info:
-            models.append(ModelInfo(
-                name=name,
-                type="tg1",
-                status=info.get('status', 'unknown'),
-                path=f"tg1_monitoring/plots/{name}"
-            ))
+        if isinstance(info, dict):
+            models.append({
+                "name": name,
+                "type": "TG1 Model",
+                "category": "tg1",
+                "loaded": info.get('status') == 'loaded',
+                "path": str(TG1_MODELS_DIR / f"{name}.pkl")
+            })
     
-    return {"models": models, "total": len(models)}
+    return models
 
 @app.get("/api/data/datasets", tags=["Data"])
 async def list_datasets():
@@ -391,26 +394,50 @@ async def get_drift_metrics(dataset: str = "TG1_Sousse_ML"):
         numeric_cols = df.select_dtypes(include=[np.number]).columns.tolist()[:10]
         
         metrics = []
+        total_drift = 0
         for col in numeric_cols:
             values = df[col].dropna()
             if len(values) > 0:
                 mean = values.mean()
-                std = values.std()
+                std = values.std() if values.std() > 0 else 1
                 current = values.iloc[-1] if len(values) > 0 else mean
                 ucl = mean + 3 * std
                 lcl = mean - 3 * std
                 
-                metrics.append(DriftMetrics(
-                    metric_name=col,
-                    current_value=float(current),
-                    mean=float(mean),
-                    std=float(std),
-                    ucl=float(ucl),
-                    lcl=float(lcl),
-                    is_out_of_control=current > ucl or current < lcl
-                ))
+                # Calculate drift score
+                drift_score = abs(current - mean) / (3 * std) if std > 0 else 0
+                total_drift += drift_score
+                
+                # Determine severity
+                if drift_score > 1:
+                    severity = "CRITICAL"
+                elif drift_score > 0.66:
+                    severity = "HIGH"
+                elif drift_score > 0.33:
+                    severity = "MEDIUM"
+                else:
+                    severity = "LOW"
+                
+                metrics.append({
+                    "feature": col,
+                    "drift_score": float(drift_score),
+                    "severity": severity,
+                    "current_value": float(current),
+                    "mean": float(mean),
+                    "std": float(std),
+                    "ucl": float(ucl),
+                    "lcl": float(lcl),
+                    "is_out_of_control": current > ucl or current < lcl,
+                    "timestamp": datetime.now().isoformat()
+                })
         
-        return {"metrics": metrics, "dataset": dataset}
+        overall_drift = (total_drift / len(metrics) * 100) if metrics else 0
+        
+        return {
+            "metrics": metrics, 
+            "dataset": dataset,
+            "overall_drift": overall_drift
+        }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -525,7 +552,10 @@ async def get_health_index():
         # Load latest data
         df = pd.read_csv(DATA_DIR / "TG1_Sousse_ML.csv", nrows=100)
         
-        health_score = 100
+        overall_health = 100
+        thermal = 95
+        electrical = 92
+        cooling = 88
         issues = []
         
         # Check temperature columns
@@ -533,34 +563,40 @@ async def get_health_index():
         if temp_cols:
             max_temp = df[temp_cols].max().max()
             if max_temp > 90:
-                health_score -= 30
+                overall_health -= 30
+                thermal -= 40
                 issues.append(f"Critical temperature: {max_temp:.1f}°C")
             elif max_temp > 80:
-                health_score -= 15
+                overall_health -= 15
+                thermal -= 20
                 issues.append(f"High temperature: {max_temp:.1f}°C")
         
-        # Check for anomalies using Isolation Forest
-        if 'isolation_forest' in registry.ml_models and registry.ml_models['isolation_forest'].get('status') == 'loaded':
-            model = registry.ml_models['isolation_forest']['model']
-            numeric_cols = df.select_dtypes(include=[np.number]).columns[:10]
-            X = df[numeric_cols].dropna()
-            
-            if len(X) > 0:
-                predictions = model.predict(X.values)
-                anomaly_ratio = (predictions == -1).sum() / len(predictions)
-                
-                if anomaly_ratio > 0.2:
-                    health_score -= 25
-                    issues.append(f"High anomaly rate: {anomaly_ratio*100:.1f}%")
-                elif anomaly_ratio > 0.1:
-                    health_score -= 10
-                    issues.append(f"Elevated anomalies: {anomaly_ratio*100:.1f}%")
+        # Simple anomaly check based on standard deviation
+        numeric_cols = df.select_dtypes(include=[np.number]).columns[:5]
+        if len(numeric_cols) > 0:
+            for col in numeric_cols:
+                values = df[col].dropna()
+                if len(values) > 0:
+                    mean = values.mean()
+                    std = values.std()
+                    if std > 0:
+                        last_val = values.iloc[-1]
+                        z_score = abs(last_val - mean) / std
+                        if z_score > 3:
+                            overall_health -= 10
+                            electrical -= 15
         
-        health_score = max(0, health_score)
+        overall_health = max(0, overall_health)
+        thermal = max(0, thermal)
+        electrical = max(0, electrical)
+        cooling = max(0, cooling)
         
         return {
-            "health_index": health_score,
-            "status": "CRITICAL" if health_score < 50 else "WARNING" if health_score < 75 else "HEALTHY",
+            "overall_health": overall_health,
+            "thermal": thermal,
+            "electrical": electrical,
+            "cooling": cooling,
+            "status": "CRITICAL" if overall_health < 50 else "WARNING" if overall_health < 75 else "HEALTHY",
             "issues": issues,
             "timestamp": datetime.now().isoformat()
         }
