@@ -769,8 +769,11 @@ def page_live_analysis():
                     """, unsafe_allow_html=True)
                     
                     with st.expander("📋 Ticket Details"):
-                        st.markdown(f"**Description:** {ticket.llm_description[:500]}...")
-                        st.markdown(f"**Recommendation:** {ticket.llm_recommendation[:500]}...")
+                        st.markdown("**🔍 Problem Description:**")
+                        st.markdown(f"{ticket.llm_description[:500]}...")
+                        st.markdown("**🛠️ Resolution Steps:**")
+                        resolution = getattr(ticket, 'llm_resolution', '') or ticket.llm_recommendation
+                        st.markdown(f"{resolution[:500]}...")
             else:
                 st.info(f"No anomalies above threshold ({severity_threshold})")
         elif not anomalies_detected:
@@ -922,9 +925,18 @@ def page_manual_ticket():
         """)
         
         with st.expander("📋 Full Details"):
-            st.markdown(f"**Description:** {ticket.llm_description}")
-            st.markdown(f"**Root Cause:** {ticket.llm_root_cause}")
-            st.markdown(f"**Recommendation:** {ticket.llm_recommendation}")
+            st.markdown("### 🔍 Problem Description")
+            st.markdown(f"{ticket.llm_description}")
+            
+            st.markdown("### 🎯 Root Cause Analysis")
+            st.markdown(f"{ticket.llm_root_cause}")
+            
+            st.markdown("### 🛠️ Resolution Steps")
+            resolution = getattr(ticket, 'llm_resolution', '') or ticket.llm_recommendation
+            st.markdown(f"{resolution}")
+            
+            st.markdown("### 📋 Recommendations")
+            st.markdown(f"{ticket.llm_recommendation}")
 
 
 def page_settings():

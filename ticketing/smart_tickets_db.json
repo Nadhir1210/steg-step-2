@@ -48,7 +48,8 @@
       "ml_detector": "v2.0",
       "rag_retriever": "v1.0",
       "llm_generator": "template_v1.0"
-    }
+    },
+    "llm_resolution": ""
   },
   {
     "ticket_id": "SMART-20260305-68149816",
@@ -96,7 +97,8 @@
       "ml_detector": "v2.0",
       "rag_retriever": "v1.0",
       "llm_generator": "template_v1.0"
-    }
+    },
+    "llm_resolution": ""
   },
   {
     "ticket_id": "SMART-20260305-696A9934",
@@ -144,7 +146,8 @@
       "ml_detector": "v2.0",
       "rag_retriever": "v1.0",
       "llm_generator": "template_v1.0"
-    }
+    },
+    "llm_resolution": ""
   },
   {
     "ticket_id": "SMART-20260305-D92C11EE",
@@ -187,7 +190,8 @@
       "ml_detector": "v2.0",
       "rag_retriever": "v1.0",
       "llm_generator": "template_v1.0"
-    }
+    },
+    "llm_resolution": ""
   },
   {
     "ticket_id": "SMART-20260305-B972BD03",
@@ -229,7 +233,8 @@
       "ml_detector": "v2.0",
       "rag_retriever": "v1.0",
       "llm_generator": "template_v1.0"
-    }
+    },
+    "llm_resolution": ""
   },
   {
     "ticket_id": "SMART-20260305-A89F7D2D",
@@ -272,6 +277,56 @@
       "ml_detector": "v2.0",
       "rag_retriever": "v1.0",
       "llm_generator": "template_v1.0"
-    }
+    },
+    "llm_resolution": ""
+  },
+  {
+    "ticket_id": "SMART-20260306-14DA978E",
+    "timestamp": "2026-03-06T06:34:03.350203",
+    "module": "THERMAL",
+    "anomaly_type": "Température élevée",
+    "severity_score": 75,
+    "priority": "HIGH",
+    "status": "OPEN",
+    "ml_confidence": 0.92,
+    "detected_features": {
+      "temperature": 95,
+      "severity_score": 75,
+      "load": 110
+    },
+    "shap_analysis": {
+      "load": 0.4,
+      "cooling": 0.3,
+      "ambient": 0.2
+    },
+    "retrieved_docs": [
+      "[Manuel Turbine TG1 - Section 4.2] PROCÉDURE DE SURCHAUFFE STATOR\n                ================================\n                1. Vérifier la température ambiante et les conditions de charge\n                2. Contrôler le système de refroidissement (ventilateurs, échangeurs)\n                3. Inspecter l'isolation thermique des...",
+      "[Manuel Turbine TG1 - Section 7.1] DÉCHARGES PARTIELLES (PD)\n                =========================\n                Les décharges partielles indiquent une dégradation de l'isolation.\n                \n                TYPES DE PD:\n                - PD internes (cavités dans isolation)\n                - PD de surface (tracking)\n     ...",
+      "[Manuel Turbine TG1 - Section 5.2] DIAGNOSTIC DÉFAUT REFROIDISSEMENT\n                =================================\n                Symptômes d'inefficacité:\n                - Delta T < 10°C (insuffisant)\n                - Delta T > 30°C (surcharge thermique)\n                - Température sortie air > 60°C\n                \n       ..."
+    ],
+    "relevant_procedures": [
+      "PROCÉDURE DE SURCHAUFFE STATOR\n                ================================\n                1. Vérifier la température ambiante et les conditions de charge\n                2. Contrôler le système de refroidissement (ventilateurs, échangeurs)\n                3. Inspecter l'isolation thermique des enroulements\n                4. Mesurer la résistance d'isolement\n                5. Vérifier l'équilibre des phases\n                \n                SEUILS CRITIQUES:\n                - Température s"
+    ],
+    "similar_incidents": [
+      "INCIDENT #2024-047: Surchauffe Phase B\n                Date: 15/07/2024\n                Symptômes: Température phase B +15°C vs A et C\n                Cause: Connexion desserrée sortie alternateur\n                Résolution: Resserrage couple 120 Nm, nettoyage contacts\n                Durée arrêt: 4 heures\n                \n                INCIDENT #2024-089: PD élevé sur barres stator\n                Date: 23/09/2024\n                Symptômes: PD > 800 pC, asymétrie canaux\n                Cause:",
+      "INCIDENT #2025-012: Baisse efficacité refroidissement\n                Date: 08/02/2025\n                Symptômes: Delta T réduit à 8°C, températures en hausse\n                Cause: Filtres air colmatés + encrassement échangeur\n                Résolution: Nettoyage complet circuit refroidissement\n                Durée arrêt: 8 heures\n                \n                INCIDENT #2025-028: Instabilité fréquence\n                Date: 14/03/2025\n                Symptômes: Oscillations ±0.3 Hz\n        "
+    ],
+    "llm_description": "## Problem Analysis\n\nBased on the provided anomaly ticket, here is a concise professional problem description:\n\n\"A temperature excursion of 95°C was detected on the Thermal module, which is a critical component responsible for heat exchanger operation. The ML confidence level is 92.0%, indicating a high degree of reliability. The affected Thermal module is a key component of the power plant's thermal management system, and any disruption to its operation could lead to a cascade of failures and potential safety risks. The anomaly is currently at CRITICAL severity, necessitating prompt repair and maintenance action to prevent further escalation.\"",
+    "llm_root_cause": "## Root Cause Analysis\n\nBased on the provided data, the root cause of the anomaly is a design flaw in the thermal management system. The most likely cause is a failure in the heat exchanger, which is responsible for dissipating excess heat generated by the power plant. Contributing factors include:\n\n* Insufficient heat exchanger surface area, leading to reduced heat transfer efficiency\n* Inadequate thermal conductivity of the heat exchanger material\n* Poorly designed heat exchanger layout, resulting in hotspots and uneven heat dissipation\n\nCorrelation patterns indicate that the thermal management system is not functioning within its design parameters. The cooling load is 33.3% of the total load, which is higher than the recommended 33.3% for a 110 MW power plant. The ambient temperature is also higher than the recommended 22.2°C.",
+    "llm_recommendation": "🔶 **RAPID INTERVENTION RECOMMENDED**\n\nAs a power plant maintenance supervisor, I recommend the following to address the Thermal Module issue:\n\n**Timeline for Intervention:** 24 hours\n\n**Required Team/Resources:**\n\n* 2-3 maintenance personnel\n* 1 mechanic with thermal expertise\n* 1 technician with diagnostic tools\n* 1 supervisor\n\n**Key Actions to Take:**\n\n1. Conduct a thorough inspection of the thermal module, including the stator, rotor, and cooling system.\n2. Verify the ambient temperature and ensure it is within the recommended range.\n3. Check the thermal module's internal components, such as the stator windings and rotor bearings.\n4. Perform a diagnostic test to identify any faults or anomalies.\n5. Document all findings and recommendations in a detailed report.\n\n**Safety Considerations:**\n\n* Ensure all personnel are properly trained and equipped to work on the thermal module.\n* Use personal protective equipment (PPE) such as gloves and safety glasses.\n* Avoid using electrical tools near the thermal module to prevent electrical shock.\n* Keep the area well-ventilated to prevent overheating.\n* Follow established safety procedures when working with electrical and thermal systems.\n\n**Additional Recommendations:**\n\n* Schedule the maintenance during a maintenance window when the plant is not operating.\n* Consider performing the maintenance during a planned shutdown to minimize disruptions.\n* Document all maintenance activities and ensure that the plant's maintenance records are updated accordingly.",
+    "llm_prevention": "Pour prévenir les futures occurrences:\n1. Optimiser le planning de charge en période de forte chaleur\n2. Augmenter la fréquence de nettoyage des filtres (mensuel → bi-hebdomadaire en été)\n3. Vérifier le bon fonctionnement des alarmes de température\n4. Planifier une maintenance préventive du système de refroidissement",
+    "assigned_service": "Maintenance Mécanique",
+    "estimated_rul": "Urgent: 24-72 heures",
+    "auto_close_eligible": false,
+    "created_by": "SMART_AI_SYSTEM",
+    "updated_at": "2026-03-06T06:34:03.350624",
+    "resolution_notes": "",
+    "processing_time_ms": 24665.011,
+    "model_versions": {
+      "ml_detector": "v2.0",
+      "rag_retriever": "v1.0",
+      "llm_generator": "ollama_v1.0"
+    },
+    "llm_resolution": "## Resolution Guide\n\n**Resolution Guide: THERMAL Module - 75/100 Severity, HIGH Priority**\n\n**Immediate Actions (if critical)**:\n\n1. **Trigger a shutdown**: Immediately trigger a shutdown of the thermal module to prevent damage or further damage.\n2. **Notify maintenance personnel**: Inform maintenance personnel of the critical issue and request their assistance.\n\n**Diagnostic Steps**:\n\n1. **Check ambient temperature**: Verify the ambient temperature and ensure it does not exceed 30°C (86°F).\n2. **Inspect electrical connections**: Inspect electrical connections to the thermal module for any signs of damage or wear.\n3. **Check system pressure**: Check system pressure to ensure it is within the recommended range.\n\n**Resolution Procedure**:\n\n1. **Perform a system shutdown**: Shut down the thermal module to prevent further damage.\n2. **Inspect and repair**: Inspect the thermal module and perform any necessary repairs to restore normal operation.\n3. **Reinstall electrical connections**: Reinstall electrical connections to the thermal module and verify proper function.\n4. **Monitor system pressure**: Monitor system pressure to ensure it is within the recommended range.\n\n**Verification Steps**:\n\n1. **Perform a thermal module test**: Perform a thermal module test to verify normal operation.\n2. **Verify system pressure**: Verify system pressure to ensure it is within the recommended range.\n3. **Conduct a post-shutdown inspection**: Conduct a post-shutdown inspection to ensure the thermal module has been repaired and is functioning properly."
   }
 ]

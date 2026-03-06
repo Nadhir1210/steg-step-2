@@ -20,6 +20,16 @@ from dataclasses import dataclass, asdict, field
 from enum import Enum
 import hashlib
 import re
+import requests
+
+
+# =============================================================================
+# OLLAMA CONFIGURATION
+# =============================================================================
+
+OLLAMA_BASE_URL = "http://localhost:11434"
+OLLAMA_MODEL = "llama3.2:1b"
+OLLAMA_TIMEOUT = 120.0
 
 
 # =============================================================================
@@ -95,7 +105,7 @@ class SmartTicket:
     relevant_procedures: List[str]
     similar_incidents: List[str]
     
-    # LLM Generated Content
+    # LLM Generated Content (Ollama-powered)
     llm_description: str
     llm_root_cause: str
     llm_recommendation: str
@@ -112,6 +122,9 @@ class SmartTicket:
     # Metadata
     processing_time_ms: float
     model_versions: Dict[str, str]
+    
+    # Optional LLM Resolution (added later, has default)
+    llm_resolution: str = ""  # Step-by-step resolution guide
 
 
 # =============================================================================
@@ -479,20 +492,46 @@ class KnowledgeBase:
 
 
 # =============================================================================
-# LLM SIMULATOR (Template-based for offline use)
+# OLLAMA LLM GENERATOR - Professional Problem & Resolution Descriptions
 # =============================================================================
 
-class LLMGenerator:
+class OllamaLLMGenerator:
     """
-    Générateur de texte intelligent
-    En production: utiliser OpenAI API, Claude, ou LLM local (Llama, Mistral)
-    Ici: templates intelligents basés sur règles
+    Générateur de texte intelligent utilisant Ollama LLM
+    Génère des descriptions professionnelles des problèmes et solutions
     """
     
     def __init__(self):
-        self.templates = self._load_templates()
+        self.ollama_url = OLLAMA_BASE_URL
+        self.model = OLLAMA_MODEL
+        self.timeout = OLLAMA_TIMEOUT
+        self.templates = self._load_fallback_templates()
     
-    def _load_templates(self) -> Dict:
+    def _call_ollama(self, prompt: str) -> Optional[str]:
+        """Appeler l'API Ollama"""
+        try:
+            response = requests.post(
+                f"{self.ollama_url}/api/generate",
+                json={
+                    "model": self.model,
+                    "prompt": prompt,
+                    "stream": False,
+                    "options": {
+                        "temperature": 0.6,
+                        "top_p": 0.9,
+                        "num_predict": 400
+                    }
+                },
+                timeout=self.timeout
+            )
+            if response.status_code == 200:
+                return response.json().get("response", "")
+            return None
+        except Exception as e:
+            print(f"Ollama error: {e}")
+            return None
+    
+    def _load_fallback_templates(self) -> Dict:
         """Charger les templates de génération"""
         return {
             "description": {
@@ -543,33 +582,120 @@ class LLMGenerator:
         }
     
     def generate_description(self, module: str, metrics: Dict, ml_analysis: Dict) -> str:
-        """Générer une description intelligente"""
-        template = self.templates["description"].get(module, self.templates["description"]["THERMAL"])[0]
+        """Générer une description intelligente avec Ollama LLM"""
         
-        # Préparer les variables
+        # Préparer le contexte pour l'LLM
+        severity_score = metrics.get("severity_score", 50)
+        temperature = metrics.get("temperature", 85)
+        confidence = ml_analysis.get("confidence", 95)
+        priority = ml_analysis.get("priority", "MEDIUM")
+        
+        # Déterminer le status
+        if severity_score > 70:
+            status = "CRITICAL"
+        elif severity_score > 40:
+            status = "WARNING"
+        else:
+            status = "NORMAL"
+        
+        prompt = f"""You are a power plant maintenance expert. Analyze this anomaly ticket and provide a professional technical description.
+
+ANOMALY DATA:
+- Module: {module}
+- Severity Score: {severity_score}/100
+- Status: {status}
+- Temperature: {temperature}°C
+- ML Confidence: {confidence}%
+- Priority: {priority}
+
+Write a concise professional problem description (100 words max) that includes:
+1. What was detected
+2. Current severity level
+3. Affected component/system
+
+Be technical and specific. Use professional maintenance language."""
+
+        # Appeler Ollama
+        llm_response = self._call_ollama(prompt)
+        
+        if llm_response and len(llm_response.strip()) > 30:
+            return f"## Problem Analysis\n\n{llm_response.strip()}"
+        
+        # Fallback to template
+        template = self.templates["description"].get(module, self.templates["description"]["THERMAL"])[0]
         vars = {
             "module": module,
-            "temp": metrics.get("temperature", 85),
+            "temp": temperature,
             "threshold": 80,
-            "severity": "haute" if metrics.get("severity_score", 50) > 70 else "modérée",
-            "confidence": ml_analysis.get("confidence", 95),
-            "priority_text": "urgente" if ml_analysis.get("priority") == "CRITICAL" else "particulière",
+            "severity": "haute" if severity_score > 70 else "modérée",
+            "confidence": confidence,
+            "priority_text": "urgente" if priority == "CRITICAL" else "particulière",
             "delta_t": metrics.get("delta_t", 10),
             "efficiency_loss": (1 - metrics.get("efficiency", 0.7)) * 100,
             "efficiency": metrics.get("efficiency", 0.7) * 100,
             "nominal": 85,
             "symptom": self._get_symptom(module, metrics),
             "deviation": metrics.get("deviation", 5),
-            "severity": metrics.get("severity_score", 50),
             "asymmetry": metrics.get("asymmetry", 20),
-            "level": "ÉLEVÉ" if metrics.get("severity_score", 50) > 70 else "MOYEN",
+            "level": "ÉLEVÉ" if severity_score > 70 else "MOYEN",
             "trend": "ascendante" if metrics.get("trend", 0) > 0 else "stable"
         }
-        
         try:
             return template.format(**vars)
         except:
-            return f"Anomalie détectée sur module {module}. Score de sévérité: {metrics.get('severity_score', 50):.1f}/100"
+            return f"Anomalie détectée sur module {module}. Score de sévérité: {severity_score:.1f}/100"
+    
+    def generate_resolution(self, module: str, metrics: Dict, ml_analysis: Dict, procedures: List[str]) -> str:
+        """Générer des instructions de résolution avec Ollama LLM"""
+        
+        severity_score = metrics.get("severity_score", 50)
+        priority = ml_analysis.get("priority", "MEDIUM")
+        
+        # Contexte des procédures RAG
+        procedure_context = ""
+        if procedures:
+            procedure_context = "\n".join([p[:200] for p in procedures[:2]])
+        
+        prompt = f"""You are a power plant maintenance expert. Provide step-by-step resolution instructions for this issue.
+
+ISSUE CONTEXT:
+- Module: {module}
+- Severity: {severity_score}/100
+- Priority: {priority}
+
+RELEVANT PROCEDURES:
+{procedure_context if procedure_context else "Standard maintenance procedures apply"}
+
+Provide a clear resolution guide (150 words max) with:
+1. Immediate actions (if critical)
+2. Diagnostic steps
+3. Resolution procedure
+4. Verification steps
+
+Use numbered steps. Be specific and actionable."""
+
+        llm_response = self._call_ollama(prompt)
+        
+        if llm_response and len(llm_response.strip()) > 30:
+            return f"## Resolution Guide\n\n{llm_response.strip()}"
+        
+        # Fallback
+        return f"""## Resolution Guide
+
+### Immediate Actions
+- Notify maintenance supervisor
+- Document current readings
+
+### Diagnostic Steps
+1. Check {module} parameters
+2. Review recent trends
+3. Inspect related components
+
+### Resolution
+Follow standard {module} maintenance procedure
+
+### Verification
+Confirm parameters return to normal range"""
     
     def _get_symptom(self, module: str, metrics: Dict) -> str:
         """Obtenir le symptôme principal"""
@@ -582,29 +708,60 @@ class LLMGenerator:
         return ""
     
     def generate_root_cause(self, module: str, metrics: Dict, shap_features: Dict) -> str:
-        """Générer l'analyse de cause racine"""
+        """Générer l'analyse de cause racine avec Ollama LLM"""
         
         # Calculer les contributions SHAP
         total_shap = sum(abs(v) for v in shap_features.values()) if shap_features else 1
         
+        # Top contributing features
+        top_features = []
+        if shap_features:
+            sorted_features = sorted(shap_features.items(), key=lambda x: abs(x[1]), reverse=True)[:5]
+            for feat, value in sorted_features:
+                contribution = abs(value) / total_shap * 100
+                top_features.append(f"{feat}: {contribution:.1f}%")
+        
+        prompt = f"""You are a power plant diagnostic expert. Analyze the root cause of this anomaly.
+
+MODULE: {module}
+SEVERITY: {metrics.get('severity_score', 50)}/100
+TEMPERATURE: {metrics.get('temperature', 85)}°C
+LOAD: {metrics.get('load', 100)} MW
+
+ML FEATURE CONTRIBUTIONS (SHAP):
+{chr(10).join(top_features) if top_features else 'No feature data available'}
+
+Provide a root cause analysis (120 words max) including:
+1. Most likely cause
+2. Contributing factors
+3. Correlation patterns
+
+Be technical and specific for power plant engineers."""
+
+        llm_response = self._call_ollama(prompt)
+        
+        if llm_response and len(llm_response.strip()) > 30:
+            return f"## Root Cause Analysis\n\n{llm_response.strip()}"
+        
+        # Fallback to template-based response
         if module == "THERMAL":
-            return f"""**Analyse des causes probables (ML + SHAP)**
+            return f"""**Root Cause Analysis (ML + SHAP)**
 
-🔍 **Facteurs principaux identifiés:**
+🔍 **Primary Factors Identified:**
 
-1. **Charge thermique** - Contribution: {abs(shap_features.get('load', 0.3))/total_shap*100:.0f}%
-   - Puissance actuelle: {metrics.get('load', 100)} MW
-   - Ratio vs nominal: {metrics.get('load', 100)/124*100:.0f}%
+1. **Thermal Load** - Contribution: {abs(shap_features.get('load', 0.3))/total_shap*100:.0f}%
+   - Current Power: {metrics.get('load', 100)} MW
+   - Ratio vs Nominal: {metrics.get('load', 100)/124*100:.0f}%
 
-2. **Efficacité refroidissement** - Contribution: {abs(shap_features.get('cooling', 0.25))/total_shap*100:.0f}%
-   - ΔT mesuré: {metrics.get('delta_t', 15):.1f}°C
-   - Efficacité: {metrics.get('efficiency', 0.8)*100:.0f}%
+2. **Cooling Efficiency** - Contribution: {abs(shap_features.get('cooling', 0.25))/total_shap*100:.0f}%
+   - ΔT Measured: {metrics.get('delta_t', 15):.1f}°C
+   - Efficiency: {metrics.get('efficiency', 0.8)*100:.0f}%
 
-3. **Conditions ambiantes** - Contribution: {abs(shap_features.get('ambient', 0.15))/total_shap*100:.0f}%
-   - Température ambiante: {metrics.get('ambient_temp', 30)}°C
+3. **Ambient Conditions** - Contribution: {abs(shap_features.get('ambient', 0.15))/total_shap*100:.0f}%
+   - Ambient Temperature: {metrics.get('ambient_temp', 30)}°C
 
-📊 **Corrélations détectées:**
-- Température ↔ Charge: r = 0.85
+📊 **Detected Correlations:**
+- Temperature ↔ Load: r = 0.85
 - Température ↔ ΔT Refroidissement: r = -0.72
 """
         
@@ -631,25 +788,60 @@ class LLMGenerator:
 """
         
         else:
-            return f"Analyse causale basée sur {len(shap_features)} features. Module: {module}"
+            return f"Root cause analysis based on {len(shap_features)} features. Module: {module}"
     
     def generate_recommendation(self, priority: str, module: str, metrics: Dict, procedures: List[str]) -> str:
-        """Générer les recommandations basées sur la priorité et les procédures RAG"""
+        """Générer les recommandations avec Ollama LLM"""
         
-        # Extraire les actions des procédures RAG
+        # Contexte des procédures RAG
+        procedure_context = ""
+        if procedures:
+            procedure_context = "\n".join([p[:150] for p in procedures[:2]])
+        
+        prompt = f"""You are a power plant maintenance supervisor. Provide actionable recommendations for this issue.
+
+ISSUE DETAILS:
+- Module: {module}
+- Priority: {priority}
+- Severity: {metrics.get('severity_score', 50)}/100
+
+RELEVANT PROCEDURES:
+{procedure_context if procedure_context else "Standard procedures apply"}
+
+Based on priority level {priority}, provide recommendations (150 words max) including:
+1. Timeline for intervention
+2. Required team/resources
+3. Key actions to take
+4. Safety considerations
+
+Be specific and actionable for maintenance teams."""
+
+        llm_response = self._call_ollama(prompt)
+        
+        if llm_response and len(llm_response.strip()) > 30:
+            # Add priority header
+            if priority == "CRITICAL":
+                header = "⚠️ **URGENT INTERVENTION REQUIRED**"
+            elif priority == "HIGH":
+                header = "🔶 **RAPID INTERVENTION RECOMMENDED**"
+            else:
+                header = "📋 **PLANNED MAINTENANCE**"
+            
+            return f"{header}\n\n{llm_response.strip()}"
+        
+        # Fallback to template
         procedure_actions = self._extract_actions(procedures)
         
-        # Default values for f-string (avoid backslash in f-string expression)
-        default_immediate = "- Suivre procédure standard du manuel"
-        default_planned = "- Inspection visuelle\n- Contrôle paramètres"
-        default_monitoring = "- Relevés quotidiens\n- Analyse tendances"
-        default_preventive = "- Vérifications standards"
+        default_immediate = "- Follow standard manual procedure"
+        default_planned = "- Visual inspection\n- Parameter check"
+        default_monitoring = "- Daily readings\n- Trend analysis"
+        default_preventive = "- Standard verifications"
         
         immediate_action = procedure_actions.get('immediate') or default_immediate
         planned_action = procedure_actions.get('planned') or default_planned
         monitoring_action = procedure_actions.get('monitoring') or default_monitoring
         preventive_action = procedure_actions.get('preventive') or default_preventive
-        doc_text = procedures[0][:200] + '...' if procedures else 'Consulter manuel de maintenance'
+        doc_text = procedures[0][:200] + '...' if procedures else 'Consult maintenance manual'
         
         if priority == "CRITICAL":
             return f"""⚠️ **INTERVENTION URGENTE - PRIORITÉ MAXIMALE**
@@ -758,6 +950,10 @@ class LLMGenerator:
         return self.templates["prevention"].get(module, self.templates["prevention"]["THERMAL"])
 
 
+# Backward compatibility alias
+LLMGenerator = OllamaLLMGenerator
+
+
 # =============================================================================
 # SMART TICKET ENGINE
 # =============================================================================
@@ -838,7 +1034,7 @@ class SmartTicketEngine:
         relevant_procedures = self.knowledge_base.get_procedures(module.value, anomaly_type.value)
         similar_incidents = self.knowledge_base.get_similar_incidents(anomaly_type.value, module.value)
         
-        # 3. LLM: Générer contenu intelligent
+        # 3. LLM: Générer contenu intelligent avec Ollama
         ml_analysis = {
             "priority": priority.value,
             "confidence": ml_confidence * 100,
@@ -851,6 +1047,7 @@ class SmartTicketEngine:
             priority.value, module.value, metrics, relevant_procedures
         )
         llm_prevention = self.llm.generate_prevention(module.value)
+        llm_resolution = self.llm.generate_resolution(module.value, metrics, ml_analysis, relevant_procedures)
         
         # 4. Créer le ticket
         processing_time = (datetime.now() - start_time).total_seconds() * 1000
@@ -874,11 +1071,12 @@ class SmartTicketEngine:
             relevant_procedures=[p[:500] for p in relevant_procedures],
             similar_incidents=[i[:500] for i in similar_incidents],
             
-            # LLM
+            # LLM (Ollama-powered)
             llm_description=llm_description,
             llm_root_cause=llm_root_cause,
             llm_recommendation=llm_recommendation,
             llm_prevention=llm_prevention,
+            llm_resolution=llm_resolution,
             
             # Standard
             assigned_service=self._get_service(module),
@@ -893,7 +1091,7 @@ class SmartTicketEngine:
             model_versions={
                 "ml_detector": "v2.0",
                 "rag_retriever": "v1.0",
-                "llm_generator": "template_v1.0"
+                "llm_generator": "ollama_v1.0"
             }
         )
         
